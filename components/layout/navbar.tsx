@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { Menu, Search, Moon, Sun, Monitor, ChevronDown, LogOut, User, Settings } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,11 @@ export function Navbar() {
   const { profile, clearAuth } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -31,9 +37,13 @@ export function Navbar() {
     }
   };
 
-  const themeIcon =
-    theme === "dark" ? Moon : theme === "light" ? Sun : Monitor;
-  const ThemeIcon = themeIcon;
+  const ThemeIcon = !mounted
+    ? Monitor
+    : theme === "dark"
+      ? Moon
+      : theme === "light"
+        ? Sun
+        : Monitor;
 
   return (
     <header className="sticky top-0 z-40 h-16 border-b border-border bg-background/95 backdrop-blur-sm flex-shrink-0">
@@ -138,8 +148,20 @@ export function Navbar() {
                 )}
                 aria-label="User menu"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold flex-shrink-0">
-                  {profile?.full_name ? getInitials(profile.full_name) : "U"}
+                <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold flex-shrink-0 overflow-hidden">
+                  {profile?.avatar_url ? (
+                    <Image
+                      src={profile.avatar_url}
+                      alt={profile?.full_name ?? "User avatar"}
+                      fill
+                      className="object-cover"
+                      sizes="28px"
+                    />
+                  ) : profile?.full_name ? (
+                    getInitials(profile.full_name)
+                  ) : (
+                    "U"
+                  )}
                 </div>
                 <span className="hidden md:block font-medium text-foreground truncate max-w-[120px]">
                   {profile?.full_name ?? profile?.email ?? "User"}

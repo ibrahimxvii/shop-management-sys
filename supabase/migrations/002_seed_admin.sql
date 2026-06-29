@@ -8,9 +8,9 @@
 -- Promote a specific user to admin by email
 update public.profiles
 set    role = 'admin'
-where  email = 'your-admin@example.com';
+where  email = 'ibrahimkhan153713@gmail.com';
 
 -- Verify
 select id, email, role
 from   public.profiles
-where  email = 'your-admin@example.com';
+where  email = 'ibrahimkhan153713@gmail.com';

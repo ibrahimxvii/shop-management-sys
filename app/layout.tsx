@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ToastProvider } from "@/components/providers/toast-provider";
+import { AuthProvider } from "@/components/providers/auth-provider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,8 +44,10 @@ export default function RootLayout({
           disableTransitionOnChange={false}
         >
           <QueryProvider>
-            {children}
-            <ToastProvider />
+            <AuthProvider>
+              {children}
+              <ToastProvider />
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

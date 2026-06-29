@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatCurrency } from "@/lib/utils";
 
 interface DataPoint {
   label: string;
@@ -12,16 +13,21 @@ interface BarChartProps {
   data: DataPoint[];
   color?: string;
   height?: number;
-  formatValue?: (v: number) => string;
+  format?: "currency" | "number";
+  unit?: string;
 }
 
 export function BarChart({
   data,
   color = "hsl(var(--primary))",
   height = 200,
-  formatValue = (v) => String(v),
+  format = "number",
+  unit,
 }: BarChartProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const formatValue = (v: number) =>
+    format === "currency" ? formatCurrency(v) : unit ? `${v} ${unit}` : String(v);
 
   if (data.length === 0) {
     return (

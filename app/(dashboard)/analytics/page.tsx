@@ -66,7 +66,7 @@ async function AnalyticsContent() {
             <LineChart
               data={revenueChartData}
               height={220}
-              formatValue={(v) => formatCurrency(v)}
+              format="currency"
               showArea
             />
           </CardContent>
@@ -81,7 +81,7 @@ async function AnalyticsContent() {
               data={donutData}
               size={180}
               thickness={36}
-              formatValue={(v) => formatCurrency(v)}
+              format="currency"
             />
           </CardContent>
         </Card>
@@ -97,7 +97,7 @@ async function AnalyticsContent() {
             <BarChart
               data={weeklySalesData}
               height={200}
-              formatValue={(v) => `${v} orders`}
+              unit="orders"
             />
           </CardContent>
         </Card>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatCurrency } from "@/lib/utils";
 
 interface Segment {
   label: string;
@@ -12,7 +13,8 @@ interface DonutChartProps {
   data: Segment[];
   size?: number;
   thickness?: number;
-  formatValue?: (v: number) => string;
+  format?: "currency" | "number";
+  unit?: string;
   centerLabel?: string;
 }
 
@@ -48,10 +50,14 @@ export function DonutChart({
   data,
   size = 200,
   thickness = 40,
-  formatValue = (v) => String(v),
+  format = "number",
+  unit,
   centerLabel,
 }: DonutChartProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const formatValue = (v: number) =>
+    format === "currency" ? formatCurrency(v) : unit ? `${v} ${unit}` : String(v);
 
   const total = data.reduce((s, d) => s + d.value, 0);
   const cx = size / 2;

@@ -28,7 +28,7 @@ import { BestSellersTable } from "@/components/analytics/best-sellers-table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { productService } from "@/services/product.service";
 import { analyticsService } from "@/services/analytics.service";
-import { cn, formatCurrency as fmtCurrency } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -185,7 +185,7 @@ export default async function DashboardPage() {
                   value: m.revenue,
                 }))}
                 height={180}
-                formatValue={(v) => fmtCurrency(v)}
+                format="currency"
                 showArea
               />
             </CardContent>
