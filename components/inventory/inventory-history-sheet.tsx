@@ -62,7 +62,7 @@ interface InventoryHistoryTableProps {
 }
 
 export function InventoryHistoryTable({ productId }: InventoryHistoryTableProps) {
-  const [actionFilter, setActionFilter] = React.useState<string>("all");
+  const [actionFilter, setActionFilter] = React.useState<InventoryAction | "all">("all");
   const [page, setPage] = React.useState(0);
 
   const { data: history = [], isLoading, error } = useInventoryHistory({
@@ -93,7 +93,10 @@ export function InventoryHistoryTable({ productId }: InventoryHistoryTableProps)
           <History className="h-4 w-4 text-muted-foreground" />
           Stock Movement History
         </h2>
-        <Select value={actionFilter} onValueChange={setActionFilter}>
+        <Select
+          value={actionFilter}
+          onValueChange={(value) => setActionFilter(value as InventoryAction | "all")}
+        >
           <SelectTrigger className="w-[140px]">
             <Filter className="h-3.5 w-3.5 text-muted-foreground" />
             <SelectValue placeholder="Filter" />

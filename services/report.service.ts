@@ -30,7 +30,7 @@ export const reportService = {
       p_group_by: groupByToPg(period),
     });
     if (error) throw new Error(error.message);
-    return (data ?? []) as SalesReportRow[];
+    return (data ?? []) as unknown as SalesReportRow[];
   },
 
   async getInventoryReport(): Promise<InventoryReportRow[]> {

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { X, Plus, Hash } from "lucide-react";
-import { productSchema, type ProductFormValues } from "@/lib/validations/product";
+import { productSchema, type ProductFormValues, type ProductFormInput } from "@/lib/validations/product";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
 import { useCategories } from "@/hooks/use-categories";
 import { useBrands } from "@/hooks/use-brands";
@@ -90,8 +90,9 @@ export function ProductForm({ product }: ProductFormProps) {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors, isSubmitting },
-  } = useForm<ProductFormValues>({
+  } = useForm<ProductFormInput, unknown, ProductFormValues>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: product?.name ?? "",
@@ -110,7 +111,7 @@ export function ProductForm({ product }: ProductFormProps) {
     },
   });
 
-  const tags = watch("tags");
+  const tags = watch("tags") ?? [];
   const [tagInput, setTagInput] = React.useState("");
 
   const addTag = (raw: string) => {
@@ -166,6 +167,9 @@ export function ProductForm({ product }: ProductFormProps) {
     } else {
       const result = await createProduct.mutateAsync({ values, images: allImages });
       if (result.success && result.data) {
+        reset();
+        setImages([]);
+        setTagInput("");
         router.push(`/products/${result.data.id}`);
       }
     }

@@ -12,8 +12,8 @@ import { SidebarNav } from "./sidebar-nav";
 import type { UserRole } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 
-const SIDEBAR_WIDTH = 240;
-const SIDEBAR_COLLAPSED_WIDTH = 64;
+export const SIDEBAR_WIDTH = 240;
+export const SIDEBAR_COLLAPSED_WIDTH = 64;
 
 export function Sidebar() {
   const { sidebarOpen, sidebarCollapsed, setSidebarOpen, toggleSidebarCollapsed } =
@@ -35,7 +35,7 @@ export function Sidebar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[45] bg-black/40 backdrop-blur-sm lg:hidden"
             onClick={() => setSidebarOpen(false)}
             aria-hidden="true"
           />
@@ -45,7 +45,7 @@ export function Sidebar() {
       {/* Sidebar — Desktop */}
       <aside
         className={cn(
-          "hidden lg:flex flex-col h-screen sticky top-0",
+          "hidden lg:flex flex-col h-screen fixed top-0 left-0 z-30",
           "bg-sidebar border-r border-sidebar-border",
           "transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0"
         )}
@@ -70,7 +70,7 @@ export function Sidebar() {
             exit={{ x: -SIDEBAR_WIDTH }}
             transition={{ type: "spring", damping: 25, stiffness: 250 }}
             className={cn(
-              "fixed left-0 top-0 z-40 flex h-screen flex-col lg:hidden",
+              "fixed left-0 top-0 z-50 flex h-screen flex-col lg:hidden",
               "bg-sidebar border-r border-sidebar-border"
             )}
             style={{ width: SIDEBAR_WIDTH }}

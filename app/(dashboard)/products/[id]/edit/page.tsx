@@ -54,7 +54,7 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
         </Button>
       </div>
 
-      <ProductForm product={product} />
+      <ProductForm key={product.id} product={product} />
     </div>
   );
 }

@@ -16,6 +16,9 @@ export interface Database {
           slug: string;
           description: string | null;
           parent_id: string | null;
+          image_url: string | null;
+          image_path: string | null;
+          status: "active" | "inactive";
           created_at: string;
           updated_at: string;
         };
@@ -25,6 +28,9 @@ export interface Database {
           slug: string;
           description?: string | null;
           parent_id?: string | null;
+          image_url?: string | null;
+          image_path?: string | null;
+          status?: "active" | "inactive";
           created_at?: string;
           updated_at?: string;
         };
@@ -34,8 +40,12 @@ export interface Database {
           slug?: string;
           description?: string | null;
           parent_id?: string | null;
+          image_url?: string | null;
+          image_path?: string | null;
+          status?: "active" | "inactive";
           updated_at?: string;
         };
+        Relationships: [];
       };
       brands: {
         Row: {
@@ -44,6 +54,8 @@ export interface Database {
           slug: string;
           description: string | null;
           logo_url: string | null;
+          logo_path: string | null;
+          status: "active" | "inactive";
           created_at: string;
           updated_at: string;
         };
@@ -53,6 +65,8 @@ export interface Database {
           slug: string;
           description?: string | null;
           logo_url?: string | null;
+          logo_path?: string | null;
+          status?: "active" | "inactive";
           created_at?: string;
           updated_at?: string;
         };
@@ -62,8 +76,11 @@ export interface Database {
           slug?: string;
           description?: string | null;
           logo_url?: string | null;
+          logo_path?: string | null;
+          status?: "active" | "inactive";
           updated_at?: string;
         };
+        Relationships: [];
       };
       products: {
         Row: {
@@ -119,6 +136,22 @@ export interface Database {
           tags?: string[];
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey";
+            columns: ["category_id"];
+            isOneToOne: false;
+            referencedRelation: "categories";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "products_brand_id_fkey";
+            columns: ["brand_id"];
+            isOneToOne: false;
+            referencedRelation: "brands";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       product_images: {
         Row: {
@@ -147,6 +180,15 @@ export interface Database {
           is_primary?: boolean;
           sort_order?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: "product_images_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       profiles: {
         Row: {
@@ -178,6 +220,7 @@ export interface Database {
           is_active?: boolean;
           updated_at?: string;
         };
+        Relationships: [];
       };
       employees: {
         Row: {
@@ -189,6 +232,7 @@ export interface Database {
           avatar_path: string | null;
           role: "admin" | "manager" | "staff";
           status: "active" | "inactive" | "on_leave";
+          user_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -201,6 +245,7 @@ export interface Database {
           avatar_path?: string | null;
           role?: "admin" | "manager" | "staff";
           status?: "active" | "inactive" | "on_leave";
+          user_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -213,10 +258,291 @@ export interface Database {
           avatar_path?: string | null;
           role?: "admin" | "manager" | "staff";
           status?: "active" | "inactive" | "on_leave";
+          user_id?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
-    };
+      customers: {
+        Row: {
+          id: string;
+          full_name: string;
+          email: string | null;
+          phone: string | null;
+          address: string | null;
+          city: string | null;
+          state: string | null;
+          country: string;
+          postal_code: string | null;
+          notes: string | null;
+          status: "active" | "inactive";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          full_name: string;
+          email?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          city?: string | null;
+          state?: string | null;
+          country?: string;
+          postal_code?: string | null;
+          notes?: string | null;
+          status?: "active" | "inactive";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          full_name?: string;
+          email?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          city?: string | null;
+          state?: string | null;
+          country?: string;
+          postal_code?: string | null;
+          notes?: string | null;
+          status?: "active" | "inactive";
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      orders: {
+        Row: {
+          id: string;
+          order_number: string;
+          customer_id: string | null;
+          status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded";
+          payment_method: "cash" | "card" | "bank_transfer" | "online";
+          payment_status: "unpaid" | "partial" | "paid" | "refunded";
+          subtotal: number;
+          discount_amount: number;
+          tax_amount: number;
+          shipping_amount: number;
+          grand_total: number;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_number?: string;
+          customer_id?: string | null;
+          status?: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded";
+          payment_method?: "cash" | "card" | "bank_transfer" | "online";
+          payment_status?: "unpaid" | "partial" | "paid" | "refunded";
+          subtotal?: number;
+          discount_amount?: number;
+          tax_amount?: number;
+          shipping_amount?: number;
+          grand_total?: number;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_number?: string;
+          customer_id?: string | null;
+          status?: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled" | "refunded";
+          payment_method?: "cash" | "card" | "bank_transfer" | "online";
+          payment_status?: "unpaid" | "partial" | "paid" | "refunded";
+          subtotal?: number;
+          discount_amount?: number;
+          tax_amount?: number;
+          shipping_amount?: number;
+          grand_total?: number;
+          notes?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "orders_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "customers";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      order_items: {
+        Row: {
+          id: string;
+          order_id: string;
+          product_id: string;
+          quantity: number;
+          unit_price: number;
+          discount_percent: number;
+          total_price: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          product_id: string;
+          quantity?: number;
+          unit_price: number;
+          discount_percent?: number;
+          total_price: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          product_id?: string;
+          quantity?: number;
+          unit_price?: number;
+          discount_percent?: number;
+          total_price?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      payments: {
+        Row: {
+          id: string;
+          order_id: string;
+          amount: number;
+          payment_method: string;
+          payment_date: string;
+          transaction_id: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          amount: number;
+          payment_method: string;
+          payment_date?: string;
+          transaction_id?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          amount?: number;
+          payment_method?: string;
+          payment_date?: string;
+          transaction_id?: string | null;
+          notes?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "payments_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      inventory_history: {
+        Row: {
+          id: string;
+          product_id: string;
+          user_id: string;
+          action: "stock_in" | "stock_out" | "adjustment" | "initial";
+          previous_quantity: number;
+          updated_quantity: number;
+          quantity_change: number;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          product_id: string;
+          user_id: string;
+          action: "stock_in" | "stock_out" | "adjustment" | "initial";
+          previous_quantity?: number;
+          updated_quantity?: number;
+          quantity_change?: number;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          product_id?: string;
+          user_id?: string;
+          action?: "stock_in" | "stock_out" | "adjustment" | "initial";
+          previous_quantity?: number;
+          updated_quantity?: number;
+          quantity_change?: number;
+          notes?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "inventory_history_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "inventory_history_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: "low_stock" | "new_order" | "cancelled_order" | "refund_request" | "system";
+          title: string;
+          message: string;
+          read: boolean;
+          related_id: string | null;
+          related_type: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: "low_stock" | "new_order" | "cancelled_order" | "refund_request" | "system";
+          title: string;
+          message: string;
+          read?: boolean;
+          related_id?: string | null;
+          related_type?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: "low_stock" | "new_order" | "cancelled_order" | "refund_request" | "system";
+          title?: string;
+          message?: string;
+          read?: boolean;
+          related_id?: string | null;
+          related_type?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       settings: {
         Row: {
           id: string;
@@ -276,6 +602,7 @@ export interface Database {
           default_low_stock_limit?: number;
           updated_at?: string;
         };
+        Relationships: [];
       };
       user_preferences: {
         Row: {
@@ -305,6 +632,7 @@ export interface Database {
           items_per_page?: 10 | 25 | 50 | 100;
           updated_at?: string;
         };
+        Relationships: [];
       };
       activity_logs: {
         Row: {
@@ -335,6 +663,7 @@ export interface Database {
           description?: string;
           metadata?: Record<string, unknown>;
         };
+        Relationships: [];
       };
       login_history: {
         Row: {
@@ -354,10 +683,26 @@ export interface Database {
           created_at?: string;
         };
         Update: Record<string, never>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      get_order_stats: { Args: Record<string, never>; Returns: Json };
+      get_monthly_revenue: { Args: { months_back: number }; Returns: Json };
+      get_weekly_sales: { Args: { weeks_back: number }; Returns: Json };
+      get_best_selling_products: { Args: { p_limit: number }; Returns: Json };
+      get_top_categories: { Args: { p_limit: number }; Returns: Json };
+      get_top_customers: { Args: { p_limit: number }; Returns: Json };
+      get_inventory_stats: { Args: Record<string, never>; Returns: Json };
+      get_sales_report: {
+        Args: { p_from: string; p_to: string; p_group_by: string };
+        Returns: Json;
+      };
+      create_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+      update_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+      cancel_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+    };
     Enums: {
       user_role: "admin" | "manager" | "staff";
       product_status: "active" | "inactive" | "draft";

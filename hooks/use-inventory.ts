@@ -12,6 +12,7 @@ import {
   adjustStockAction,
   getInventoryStatsAction,
 } from "@/app/actions/inventory.actions";
+import type { InventoryFilters } from "@/services/inventory.service";
 
 export function useInventoryProducts(search?: string) {
   return useQuery({
@@ -49,11 +50,7 @@ export function useOutOfStockProducts() {
   });
 }
 
-export function useInventoryHistory(filters?: {
-  product_id?: string;
-  action?: string;
-  limit?: number;
-}) {
+export function useInventoryHistory(filters?: InventoryFilters) {
   return useQuery({
     queryKey: ["inventory-history", filters],
     queryFn: async () => {

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store/ui.store";
 import { useAuthStore } from "@/store/auth.store";
-import { authService } from "@/services/auth.service";
+import { signOutAction } from "@/app/actions/auth.actions";
 import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { NotificationDropdown } from "@/components/notifications/notification-dropdown";
@@ -27,14 +27,14 @@ export function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await authService.logout();
-      clearAuth();
-      router.push("/login");
-      toast.success("Signed out successfully");
-    } catch {
-      toast.error("Failed to sign out");
+    const result = await signOutAction();
+    if (result.error) {
+      toast.error(result.error);
+      return;
     }
+    clearAuth();
+    router.push("/login");
+    router.refresh();
   };
 
   const ThemeIcon = !mounted

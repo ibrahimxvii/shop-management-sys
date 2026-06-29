@@ -40,6 +40,7 @@ export const productSchema = z.object({
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;
+export type ProductFormInput = z.input<typeof productSchema>;
 
 export const categorySchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
@@ -55,6 +56,7 @@ export const categorySchema = z.object({
 });
 
 export type CategoryFormValues = z.infer<typeof categorySchema>;
+export type CategoryFormInput = z.input<typeof categorySchema>;
 
 export const brandSchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name too long"),
@@ -70,6 +72,7 @@ export const brandSchema = z.object({
 });
 
 export type BrandFormValues = z.infer<typeof brandSchema>;
+export type BrandFormInput = z.input<typeof brandSchema>;
 
 export const bulkStatusSchema = z.object({
   ids: z.array(z.string().uuid()).min(1),

@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { customerSchema, type CustomerFormValues } from "@/lib/validations/order";
+import { customerSchema, type CustomerFormValues, type CustomerFormInput } from "@/lib/validations/order";
 import { useCreateCustomer, useUpdateCustomer } from "@/hooks/use-customers";
 import type { Customer } from "@/types/orders";
 
@@ -36,7 +36,7 @@ export function CustomerFormDialog({ open, onOpenChange, customer }: CustomerFor
     control,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<CustomerFormValues>({
+  } = useForm<CustomerFormInput, unknown, CustomerFormValues>({
     resolver: zodResolver(customerSchema),
     defaultValues: {
       full_name: "",

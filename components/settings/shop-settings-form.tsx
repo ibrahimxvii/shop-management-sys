@@ -14,6 +14,7 @@ import { SingleImageUploader } from "@/components/ui/single-image-uploader";
 import {
   shopSettingsSchema,
   type ShopSettingsValues,
+  type ShopSettingsInput,
 } from "@/lib/validations/settings";
 import { updateSettingsAction } from "@/app/actions/settings.actions";
 import type { ShopSettings } from "@/types/settings";
@@ -76,7 +77,7 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
     setValue,
     watch,
     formState: { errors, isSubmitting, isDirty },
-  } = useForm<ShopSettingsValues>({
+  } = useForm<ShopSettingsInput, unknown, ShopSettingsValues>({
     resolver: zodResolver(shopSettingsSchema),
     defaultValues: {
       shop_name: initialData?.shop_name ?? "ShopFlow",

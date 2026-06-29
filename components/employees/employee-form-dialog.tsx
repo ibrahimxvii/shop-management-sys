@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SingleImageUploader } from "@/components/ui/single-image-uploader";
-import { employeeSchema, type EmployeeFormValues } from "@/lib/validations/employee";
+import { employeeSchema, type EmployeeFormValues, type EmployeeFormInput } from "@/lib/validations/employee";
 import { useCreateEmployee, useUpdateEmployee } from "@/hooks/use-employees";
 import type { Employee } from "@/types/employees";
 
@@ -38,7 +38,7 @@ export function EmployeeFormDialog({ open, onOpenChange, employee }: EmployeeFor
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<EmployeeFormValues>({
+  } = useForm<EmployeeFormInput, unknown, EmployeeFormValues>({
     resolver: zodResolver(employeeSchema),
     defaultValues: {
       full_name: "",
@@ -113,11 +113,30 @@ export function EmployeeFormDialog({ open, onOpenChange, employee }: EmployeeFor
 
           <div className="space-y-1.5">
             <Label htmlFor="emp_email">Email *</Label>
-            <Input id="emp_email" type="email" {...register("email")} placeholder="jane@company.com" />
+            <Input id="emp_email" type="email" {...register("email")} placeholder="jane@company.com" disabled={isEditing} />
             {errors.email && (
               <p className="text-xs text-destructive">{errors.email.message}</p>
             )}
           </div>
+
+          {!isEditing && (
+            <div className="space-y-1.5">
+              <Label htmlFor="emp_password">Password *</Label>
+              <Input
+                id="emp_password"
+                type="password"
+                {...register("password")}
+                placeholder="At least 8 characters"
+                autoComplete="new-password"
+              />
+              {errors.password && (
+                <p className="text-xs text-destructive">{errors.password.message}</p>
+              )}
+              <p className="text-xs text-muted-foreground">
+                This creates their login — they&apos;ll sign in with this email and password.
+              </p>
+            </div>
+          )}
 
           <div className="space-y-1.5">
             <Label htmlFor="emp_phone">Phone</Label>

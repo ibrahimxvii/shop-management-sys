@@ -10,7 +10,7 @@ const HISTORY_WITH_RELATIONS = `
 
 export interface InventoryFilters {
   search?: string;
-  action?: string;
+  action?: "stock_in" | "stock_out" | "adjustment" | "initial" | "all";
   product_id?: string;
   limit?: number;
   offset?: number;
@@ -212,7 +212,7 @@ export const inventoryService = {
     const supabase = await createClient();
     const { data, error } = await supabase.rpc("get_inventory_stats");
     if (error) throw new Error(error.message);
-    return data as InventoryStats;
+    return data as unknown as InventoryStats;
   },
 
   async _recordHistory({
@@ -226,7 +226,7 @@ export const inventoryService = {
   }: {
     productId: string;
     userId: string;
-    action: string;
+    action: "stock_in" | "stock_out" | "adjustment" | "initial";
     previousQty: number;
     newQty: number;
     change: number;

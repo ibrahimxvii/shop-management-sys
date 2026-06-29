@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SingleImageUploader } from "@/components/ui/single-image-uploader";
-import { brandSchema, type BrandFormValues } from "@/lib/validations/product";
+import { brandSchema, type BrandFormValues, type BrandFormInput } from "@/lib/validations/product";
 import type { Brand } from "@/types/products";
 
 interface BrandFormDialogProps {
@@ -60,7 +60,7 @@ export function BrandFormDialog({
   const [logo, setLogo] = React.useState<{ url: string; path: string } | null>(null);
   const [removeLogo, setRemoveLogo] = React.useState(false);
 
-  const form = useForm<BrandFormValues>({
+  const form = useForm<BrandFormInput, unknown, BrandFormValues>({
     resolver: zodResolver(brandSchema),
     defaultValues: { name: "", slug: "", description: "", status: "active" },
   });

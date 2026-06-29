@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { inventoryService } from "@/services/inventory.service";
+import { inventoryService, type InventoryFilters } from "@/services/inventory.service";
 import { stockMovementSchema, adjustStockSchema } from "@/lib/validations/inventory";
 import { parseError } from "@/lib/errors";
 
@@ -40,12 +40,7 @@ export async function getOutOfStockProductsAction() {
   }
 }
 
-export async function getInventoryHistoryAction(filters?: {
-  product_id?: string;
-  action?: string;
-  limit?: number;
-  offset?: number;
-}) {
+export async function getInventoryHistoryAction(filters?: InventoryFilters) {
   try {
     const history = await inventoryService.getInventoryHistory(filters);
     return { success: true, data: history, error: null };

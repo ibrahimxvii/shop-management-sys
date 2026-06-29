@@ -10,6 +10,7 @@ export interface Employee {
   avatar_path: string | null;
   role: EmployeeRole;
   status: EmployeeStatus;
+  user_id: string | null;
   created_at: string;
   updated_at: string;
 }

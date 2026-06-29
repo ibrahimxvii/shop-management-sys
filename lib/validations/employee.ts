@@ -8,6 +8,14 @@ export const employeeSchema = z.object({
   status: z.enum(["active", "inactive", "on_leave"]).default("active"),
   avatar_url: z.string().optional(),
   avatar_path: z.string().optional(),
+  // Required when creating a new employee (creates their login account).
+  // Left blank when editing — the existing account's password is untouched.
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .optional()
+    .or(z.literal("")),
 });
 
 export type EmployeeFormValues = z.infer<typeof employeeSchema>;
+export type EmployeeFormInput = z.input<typeof employeeSchema>;

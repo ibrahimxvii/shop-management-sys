@@ -83,11 +83,11 @@ export const analyticsService = {
 
     return {
       overview,
-      monthlyRevenue: (monthlyData ?? []) as MonthlyRevenue[],
-      weeklySales: (weeklyData ?? []) as WeeklySales[],
-      bestSellingProducts: (bestSellers ?? []) as BestSellingProduct[],
-      topCategories: (topCats ?? []) as TopCategory[],
-      topCustomers: (topCusts ?? []) as TopCustomer[],
+      monthlyRevenue: (monthlyData ?? []) as unknown as MonthlyRevenue[],
+      weeklySales: (weeklyData ?? []) as unknown as WeeklySales[],
+      bestSellingProducts: (bestSellers ?? []) as unknown as BestSellingProduct[],
+      topCategories: (topCats ?? []) as unknown as TopCategory[],
+      topCustomers: (topCusts ?? []) as unknown as TopCustomer[],
     };
   },
 };

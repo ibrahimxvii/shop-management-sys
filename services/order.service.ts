@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Order, OrderWithRelations, OrderFilters, OrderStats } from "@/types/orders";
+import type { Order, OrderWithRelations, OrderFilters, OrderStats, OrderStatus } from "@/types/orders";
 
 const ORDER_WITH_RELATIONS = `
   *,
@@ -116,7 +116,7 @@ export const orderService = {
 
   async updateOrderStatus(
     orderId: string,
-    status: string,
+    status: OrderStatus,
     userId: string
   ): Promise<void> {
     const needsStockRestore = status === "cancelled" || status === "refunded";
@@ -149,7 +149,7 @@ export const orderService = {
     const supabase = await createClient();
     const { data, error } = await supabase.rpc("get_order_stats");
     if (error) throw new Error(error.message);
-    return data as OrderStats;
+    return data as unknown as OrderStats;
   },
 
   async getRecentOrders(limit = 5): Promise<OrderWithRelations[]> {

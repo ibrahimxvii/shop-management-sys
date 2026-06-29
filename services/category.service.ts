@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Category } from "@/types/products";
 import type { CategoryFormValues } from "@/lib/validations/product";
+import type { Database } from "@/types/database";
 
 export interface CategoryFilters {
   search?: string;
@@ -72,7 +73,7 @@ export const categoryService = {
   ): Promise<Category> {
     const supabase = await createClient();
 
-    const updatePayload: Record<string, unknown> = {
+    const updatePayload: Database["public"]["Tables"]["categories"]["Update"] = {
       name: values.name,
       slug: values.slug,
       description: values.description || null,

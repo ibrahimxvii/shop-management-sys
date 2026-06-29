@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import {
   userPreferencesSchema,
   type UserPreferencesValues,
+  type UserPreferencesInput,
 } from "@/lib/validations/settings";
 import { updateUserPreferencesAction } from "@/app/actions/settings.actions";
 import type { UserPreferences } from "@/types/settings";
@@ -39,7 +40,7 @@ export function SystemSettingsForm({ initialData }: SystemSettingsFormProps) {
     control,
     handleSubmit,
     formState: { isSubmitting, isDirty },
-  } = useForm<UserPreferencesValues>({
+  } = useForm<UserPreferencesInput, unknown, UserPreferencesValues>({
     resolver: zodResolver(userPreferencesSchema),
     defaultValues: {
       theme: initialData?.theme ?? "system",

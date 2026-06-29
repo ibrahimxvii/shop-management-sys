@@ -10,7 +10,7 @@ import {
   AlertCircle,
   Upload,
 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { uploadImageAction } from "@/app/actions/storage.actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -66,18 +66,16 @@ export function ImageUploader({
 
   const uploadFile = React.useCallback(
     async (file: File): Promise<{ url: string; path: string } | null> => {
-      const supabase = createClient();
-      const ext = file.name.split(".").pop() ?? "jpg";
-      const path = `products/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const formData = new FormData();
+      formData.set("file", file);
+      formData.set("bucket", "product-images");
+      formData.set("folder", "products");
 
-      const { error } = await supabase.storage
-        .from("product-images")
-        .upload(path, file, { cacheControl: "3600", upsert: false });
-
-      if (error) throw new Error(error.message);
-
-      const { data } = supabase.storage.from("product-images").getPublicUrl(path);
-      return { url: data.publicUrl, path };
+      const result = await uploadImageAction(formData);
+      if (!result.success || !result.data) {
+        throw new Error(result.error ?? "Upload failed");
+      }
+      return result.data;
     },
     []
   );

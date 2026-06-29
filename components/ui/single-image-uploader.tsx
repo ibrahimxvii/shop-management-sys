@@ -3,7 +3,7 @@
 import * as React from "react";
 import Image from "next/image";
 import { Upload, X, Loader2, AlertCircle, ImageIcon } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { uploadImageAction } from "@/app/actions/storage.actions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -35,18 +35,16 @@ export function SingleImageUploader({
   const [uploadError, setUploadError] = React.useState<string | null>(null);
 
   const uploadFile = async (file: File): Promise<UploadedImage> => {
-    const supabase = createClient();
-    const ext = file.name.split(".").pop() ?? "jpg";
-    const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const formData = new FormData();
+    formData.set("file", file);
+    formData.set("bucket", bucket);
+    formData.set("folder", folder);
 
-    const { error } = await supabase.storage
-      .from(bucket)
-      .upload(path, file, { cacheControl: "3600", upsert: false });
-
-    if (error) throw new Error(error.message);
-
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-    return { url: data.publicUrl, path };
+    const result = await uploadImageAction(formData);
+    if (!result.success || !result.data) {
+      throw new Error(result.error ?? "Upload failed");
+    }
+    return result.data;
   };
 
   const handleFile = async (file: File) => {

@@ -36,9 +36,19 @@ export async function createEmployeeAction(values: unknown) {
   if (!validated.success) {
     return { success: false, data: null, error: validated.error.errors[0].message };
   }
+  if (!validated.data.password || validated.data.password.length < 8) {
+    return {
+      success: false,
+      data: null,
+      error: "Password must be at least 8 characters",
+    };
+  }
 
   try {
-    const employee = await employeeService.createEmployee(validated.data);
+    const employee = await employeeService.createEmployee({
+      ...validated.data,
+      password: validated.data.password,
+    });
     revalidatePath("/employees");
     revalidatePath("/dashboard");
     return { success: true, data: employee, error: null };

@@ -14,6 +14,7 @@ export const customerSchema = z.object({
 });
 
 export type CustomerFormValues = z.infer<typeof customerSchema>;
+export type CustomerFormInput = z.input<typeof customerSchema>;
 
 export const orderItemSchema = z.object({
   product_id: z.string().min(1, "Select a product"),
@@ -42,6 +43,7 @@ export const orderSchema = z.object({
 });
 
 export type OrderFormValues = z.infer<typeof orderSchema>;
+export type OrderFormInput = z.input<typeof orderSchema>;
 
 export const updateOrderStatusSchema = z.object({
   id: z.string().uuid(),

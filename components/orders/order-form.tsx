@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
 import { Separator } from "@/components/ui/separator";
-import { orderSchema, type OrderFormValues } from "@/lib/validations/order";
+import { orderSchema, type OrderFormValues, type OrderFormInput } from "@/lib/validations/order";
 import { useCreateOrder, useUpdateOrder } from "@/hooks/use-orders";
 import { useCustomers } from "@/hooks/use-customers";
 import { useInventoryProducts } from "@/hooks/use-inventory";
@@ -71,7 +71,7 @@ export function OrderForm({ order }: OrderFormProps) {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<OrderFormValues>({
+  } = useForm<OrderFormInput, unknown, OrderFormValues>({
     resolver: zodResolver(orderSchema),
     defaultValues: {
       customer_id: order?.customer_id ?? "",

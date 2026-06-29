@@ -40,6 +40,7 @@ export const shopSettingsSchema = z.object({
 });
 
 export type ShopSettingsValues = z.infer<typeof shopSettingsSchema>;
+export type ShopSettingsInput = z.input<typeof shopSettingsSchema>;
 
 export const userPreferencesSchema = z.object({
   theme: z.enum(["light", "dark", "system"]).default("system"),
@@ -53,6 +54,7 @@ export const userPreferencesSchema = z.object({
 });
 
 export type UserPreferencesValues = z.infer<typeof userPreferencesSchema>;
+export type UserPreferencesInput = z.input<typeof userPreferencesSchema>;
 
 export const changePasswordSchema = z
   .object({

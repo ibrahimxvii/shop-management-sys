@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import type { Brand } from "@/types/products";
 import type { BrandFormValues } from "@/lib/validations/product";
+import type { Database } from "@/types/database";
 
 export interface BrandFilters {
   search?: string;
@@ -72,7 +73,7 @@ export const brandService = {
   ): Promise<Brand> {
     const supabase = await createClient();
 
-    const updatePayload: Record<string, unknown> = {
+    const updatePayload: Database["public"]["Tables"]["brands"]["Update"] = {
       name: values.name,
       slug: values.slug,
       description: values.description || null,

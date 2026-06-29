@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SingleImageUploader } from "@/components/ui/single-image-uploader";
-import { categorySchema, type CategoryFormValues } from "@/lib/validations/product";
+import { categorySchema, type CategoryFormValues, type CategoryFormInput } from "@/lib/validations/product";
 import type { Category } from "@/types/products";
 
 interface CategoryFormDialogProps {
@@ -60,7 +60,7 @@ export function CategoryFormDialog({
   const [image, setImage] = React.useState<{ url: string; path: string } | null>(null);
   const [removeImage, setRemoveImage] = React.useState(false);
 
-  const form = useForm<CategoryFormValues>({
+  const form = useForm<CategoryFormInput, unknown, CategoryFormValues>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
       name: "",

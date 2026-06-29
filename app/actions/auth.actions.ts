@@ -103,7 +103,7 @@ export async function signOutAction(): Promise<AuthActionResult> {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
   if (error) return { error: error.message };
-  redirect("/login");
+  return {};
 }
 
 /**
