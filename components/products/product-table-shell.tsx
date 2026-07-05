@@ -47,6 +47,7 @@ import {
 } from "@/components/ui/select";
 import { SkeletonTable } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ExportMenu } from "@/components/ui/export-menu";
 import { cn } from "@/lib/utils";
 import type { ProductWithRelations, ProductStatus } from "@/types/products";
 
@@ -123,6 +124,19 @@ export function ProductTableShell() {
     setRowSelection({});
   };
 
+  const getExportRows = () =>
+    table.getFilteredRowModel().rows.map((r) => r.original).map((p) => ({
+      Name: p.name,
+      SKU: p.sku ?? "",
+      Barcode: p.barcode ?? "",
+      Category: p.category?.name ?? "",
+      Brand: p.brand?.name ?? "",
+      "Purchase Price": p.purchase_price,
+      "Selling Price": p.selling_price,
+      Quantity: p.quantity,
+      Status: p.status,
+    }));
+
   if (error) {
     return (
       <EmptyState
@@ -174,6 +188,8 @@ export function ProductTableShell() {
               ))}
             </SelectContent>
           </Select>
+
+          <ExportMenu filename="products" getRows={getExportRows} disabled={products.length === 0} />
 
           <Button asChild>
             <Link href="/products/new">

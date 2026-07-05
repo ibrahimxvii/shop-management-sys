@@ -2,13 +2,15 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Menu, Search, Moon, Sun, Monitor, ChevronDown, LogOut, User, Settings } from "lucide-react";
+import { Menu, Search, Moon, Sun, Monitor, ChevronDown, LogOut, User, Settings, Keyboard } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useUiStore } from "@/store/ui.store";
 import { useAuthStore } from "@/store/auth.store";
+import { useCommandPaletteStore } from "@/store/command-palette.store";
+import { useShortcutsModalStore } from "@/store/shortcuts-modal.store";
 import { signOutAction } from "@/app/actions/auth.actions";
 import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -18,6 +20,8 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 export function Navbar() {
   const { toggleSidebar } = useUiStore();
   const { profile, clearAuth } = useAuthStore();
+  const openCommandPalette = useCommandPaletteStore((s) => s.open);
+  const openShortcutsModal = useShortcutsModalStore((s) => s.open);
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [mounted, setMounted] = React.useState(false);
@@ -59,25 +63,27 @@ export function Navbar() {
           <Menu className="h-5 w-5" />
         </Button>
 
-        {/* Search */}
+        {/* Search — opens the command palette */}
         <div className="flex-1 max-w-sm hidden sm:block">
-          <div className="relative">
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            className={cn(
+              "relative flex h-9 w-full items-center gap-2 rounded-lg border border-input bg-muted/50 pl-9 pr-2 text-sm text-left cursor-pointer",
+              "text-muted-foreground hover:bg-muted transition-all duration-150",
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus:bg-background"
+            )}
+            aria-label="Open search"
+          >
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
               aria-hidden="true"
             />
-            <input
-              type="search"
-              placeholder="Search…"
-              className={cn(
-                "w-full h-9 rounded-lg border border-input bg-muted/50 pl-9 pr-4 text-sm",
-                "placeholder:text-muted-foreground",
-                "focus:outline-none focus:ring-2 focus:ring-ring focus:bg-background",
-                "transition-all duration-150"
-              )}
-              aria-label="Search"
-            />
-          </div>
+            <span className="flex-1 truncate">Search…</span>
+            <kbd className="hidden md:inline-flex items-center gap-0.5 rounded border bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+              ⌘K
+            </kbd>
+          </button>
         </div>
 
         {/* Right actions */}
@@ -88,6 +94,7 @@ export function Navbar() {
             size="icon"
             className="sm:hidden"
             aria-label="Search"
+            onClick={openCommandPalette}
           >
             <Search className="h-4.5 w-4.5" />
           </Button>
@@ -200,6 +207,13 @@ export function Navbar() {
                     {label}
                   </DropdownMenu.Item>
                 ))}
+                <DropdownMenu.Item
+                  onSelect={openShortcutsModal}
+                  className="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm outline-none hover:bg-accent hover:text-accent-foreground transition-colors"
+                >
+                  <Keyboard className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+                  Keyboard Shortcuts
+                </DropdownMenu.Item>
                 <DropdownMenu.Separator className="my-1 h-px bg-border" />
                 <DropdownMenu.Item
                   onSelect={handleLogout}

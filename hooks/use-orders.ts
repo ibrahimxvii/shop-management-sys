@@ -6,10 +6,13 @@ import {
   getOrdersAction,
   getOrderByIdAction,
   createOrderAction,
+  createPosSaleAction,
   updateOrderAction,
   updateOrderStatusAction,
   deleteOrderAction,
   getOrderStatsAction,
+  processReturnAction,
+  getOrderReturnsAction,
 } from "@/app/actions/order.actions";
 
 export function useOrders(filters?: {
@@ -75,6 +78,27 @@ export function useCreateOrder() {
   });
 }
 
+export function useCreatePosSale() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (values: unknown) => {
+      const result = await createPosSaleAction(values);
+      if (!result.success) throw new Error(result.error ?? "Failed to complete sale");
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-products"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+      toast.success("Sale completed");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
 export function useUpdateOrder() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -109,6 +133,42 @@ export function useUpdateOrderStatus() {
       queryClient.invalidateQueries({ queryKey: ["inventory-products"] });
       queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
       toast.success("Order status updated");
+    },
+    onError: (error: Error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useOrderReturns(orderId: string) {
+  return useQuery({
+    queryKey: ["order-returns", orderId],
+    queryFn: async () => {
+      const result = await getOrderReturnsAction(orderId);
+      if (!result.success) throw new Error(result.error ?? "Failed to fetch returns");
+      return result.data ?? [];
+    },
+    enabled: !!orderId,
+    staleTime: 10 * 1000,
+  });
+}
+
+export function useProcessReturn() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (values: unknown) => {
+      const result = await processReturnAction(values);
+      if (!result.success) throw new Error(result.error ?? "Failed to process return");
+      return result.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order"] });
+      queryClient.invalidateQueries({ queryKey: ["order-stats"] });
+      queryClient.invalidateQueries({ queryKey: ["order-returns"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-products"] });
+      queryClient.invalidateQueries({ queryKey: ["inventory-stats"] });
+      toast.success("Return processed successfully");
     },
     onError: (error: Error) => {
       toast.error(error.message);

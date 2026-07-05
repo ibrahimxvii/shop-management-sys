@@ -1,13 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import {
-  Store,
-  Package,
-  ShoppingCart,
-  BarChart3,
-  Users,
-  CheckCircle2,
-} from "lucide-react";
+import { Store, Package, ShoppingCart, BarChart3, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 const FEATURES = [

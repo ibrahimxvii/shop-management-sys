@@ -24,13 +24,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { ProductStatusBadge } from "./product-status-badge";
 import type { ProductWithRelations } from "@/types/products";
-
-function formatPrice(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(n);
-}
+import { formatCurrency as formatPrice } from "@/lib/utils";
 
 interface ColumnActions {
   onDelete: (product: ProductWithRelations) => void;

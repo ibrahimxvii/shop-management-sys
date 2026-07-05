@@ -685,6 +685,129 @@ export interface Database {
         Update: Record<string, never>;
         Relationships: [];
       };
+      suppliers: {
+        Row: {
+          id: string;
+          name: string;
+          contact_name: string | null;
+          email: string | null;
+          phone: string | null;
+          address: string | null;
+          city: string | null;
+          country: string;
+          notes: string | null;
+          status: "active" | "inactive";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          contact_name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          city?: string | null;
+          country?: string;
+          notes?: string | null;
+          status?: "active" | "inactive";
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          name?: string;
+          contact_name?: string | null;
+          email?: string | null;
+          phone?: string | null;
+          address?: string | null;
+          city?: string | null;
+          country?: string;
+          notes?: string | null;
+          status?: "active" | "inactive";
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      purchase_orders: {
+        Row: {
+          id: string;
+          po_number: string;
+          supplier_id: string;
+          status: "pending" | "received" | "cancelled";
+          total_amount: number;
+          notes: string | null;
+          created_by: string | null;
+          received_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          po_number?: string;
+          supplier_id: string;
+          status?: "pending" | "received" | "cancelled";
+          total_amount?: number;
+          notes?: string | null;
+          created_by?: string | null;
+          received_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          supplier_id?: string;
+          status?: "pending" | "received" | "cancelled";
+          total_amount?: number;
+          notes?: string | null;
+          received_at?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_supplier_id_fkey";
+            columns: ["supplier_id"];
+            isOneToOne: false;
+            referencedRelation: "suppliers";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      purchase_order_items: {
+        Row: {
+          id: string;
+          purchase_order_id: string;
+          product_id: string;
+          quantity: number;
+          unit_cost: number;
+          total_cost: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          purchase_order_id: string;
+          product_id: string;
+          quantity: number;
+          unit_cost: number;
+          total_cost: number;
+          created_at?: string;
+        };
+        Update: Record<string, never>;
+        Relationships: [
+          {
+            foreignKeyName: "purchase_order_items_purchase_order_id_fkey";
+            columns: ["purchase_order_id"];
+            isOneToOne: false;
+            referencedRelation: "purchase_orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "purchase_order_items_product_id_fkey";
+            columns: ["product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -702,6 +825,9 @@ export interface Database {
       create_order_transaction: { Args: Record<string, unknown>; Returns: Json };
       update_order_transaction: { Args: Record<string, unknown>; Returns: Json };
       cancel_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+      process_return_transaction: { Args: Record<string, unknown>; Returns: Json };
+      receive_purchase_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+      create_purchase_order_transaction: { Args: Record<string, unknown>; Returns: Json };
     };
     Enums: {
       user_role: "admin" | "manager" | "staff";

@@ -13,15 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { OrderStatusBadge, PaymentStatusBadge } from "./order-status-badge";
 import type { OrderWithRelations } from "@/types/orders";
-import { formatDate } from "@/lib/utils";
-
-function formatCurrency(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(n);
-}
+import { formatDate, formatCurrency } from "@/lib/utils";
 
 interface OrderColumnsOptions {
   onDelete: (order: OrderWithRelations) => void;

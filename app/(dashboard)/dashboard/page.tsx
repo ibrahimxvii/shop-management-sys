@@ -28,20 +28,16 @@ import { BestSellersTable } from "@/components/analytics/best-sellers-table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { productService } from "@/services/product.service";
 import { analyticsService } from "@/services/analytics.service";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency as formatCurrencyFull } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Dashboard",
 };
 
 function formatCurrency(n: number) {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(1)}K`;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
+  if (n >= 1_000_000) return `Rs ${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `Rs ${(n / 1_000).toFixed(1)}K`;
+  return formatCurrencyFull(n);
 }
 
 const ACTION_ICONS: Record<string, LucideIcon> = {

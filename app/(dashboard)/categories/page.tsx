@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Tags } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { CategoryTableShell } from "@/components/categories/category-table-shell";
 

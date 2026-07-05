@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Store, Globe, DollarSign, Package } from "lucide-react";
@@ -88,8 +88,8 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
       shop_country: initialData?.shop_country ?? "US",
       shop_logo_url: initialData?.shop_logo_url ?? "",
       shop_logo_path: initialData?.shop_logo_path ?? "",
-      currency: initialData?.currency ?? "USD",
-      currency_symbol: initialData?.currency_symbol ?? "$",
+      currency: initialData?.currency ?? "PKR",
+      currency_symbol: initialData?.currency_symbol ?? "Rs",
       timezone: initialData?.timezone ?? "UTC",
       date_format: initialData?.date_format ?? "MM/DD/YYYY",
       language: initialData?.language ?? "en",
@@ -308,7 +308,7 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
                 <Input
                   id="currency"
                   {...register("currency")}
-                  placeholder="USD"
+                  placeholder="PKR"
                   maxLength={10}
                 />
                 {fieldError("currency")}
@@ -319,7 +319,7 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
                 <Input
                   id="currency_symbol"
                   {...register("currency_symbol")}
-                  placeholder="$"
+                  placeholder="Rs"
                   maxLength={5}
                 />
                 {fieldError("currency_symbol")}

@@ -4,12 +4,14 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X, Plus, Hash } from "lucide-react";
+import { X, Hash, Wand2 } from "lucide-react";
 import { productSchema, type ProductFormValues, type ProductFormInput } from "@/lib/validations/product";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
 import { useCategories } from "@/hooks/use-categories";
 import { useBrands } from "@/hooks/use-brands";
 import { ImageUploader, type ManagedImage } from "./image-uploader";
+import { BarcodePreview } from "./barcode-preview";
+import { generateSku, generateEan13Barcode } from "@/lib/barcode";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -112,6 +114,7 @@ export function ProductForm({ product }: ProductFormProps) {
   });
 
   const tags = watch("tags") ?? [];
+  const barcodeValue = watch("barcode") ?? "";
   const [tagInput, setTagInput] = React.useState("");
 
   const addTag = (raw: string) => {
@@ -211,23 +214,51 @@ export function ProductForm({ product }: ProductFormProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="sku">SKU</Label>
-                <Input
-                  id="sku"
-                  placeholder="e.g. WBH-001"
-                  {...register("sku")}
-                />
+                <div className="flex gap-1.5">
+                  <Input
+                    id="sku"
+                    placeholder="e.g. WBH-001"
+                    {...register("sku")}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="shrink-0"
+                    title="Generate SKU"
+                    onClick={() => setValue("sku", generateSku(), { shouldValidate: true })}
+                  >
+                    <Wand2 className="h-4 w-4" />
+                  </Button>
+                </div>
                 <FieldError message={errors.sku?.message} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="barcode">Barcode</Label>
-                <Input
-                  id="barcode"
-                  placeholder="e.g. 0012345678901"
-                  {...register("barcode")}
-                />
+                <div className="flex gap-1.5">
+                  <Input
+                    id="barcode"
+                    placeholder="e.g. 0012345678901"
+                    {...register("barcode")}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="shrink-0"
+                    title="Generate EAN-13 barcode"
+                    onClick={() =>
+                      setValue("barcode", generateEan13Barcode(), { shouldValidate: true })
+                    }
+                  >
+                    <Wand2 className="h-4 w-4" />
+                  </Button>
+                </div>
                 <FieldError message={errors.barcode?.message} />
               </div>
             </div>
+
+            <BarcodePreview value={barcodeValue} className="flex justify-center pt-1" />
           </FormSection>
 
           <FormSection title="Pricing & Inventory">

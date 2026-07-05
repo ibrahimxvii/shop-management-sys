@@ -25,6 +25,8 @@ import { Modal } from "@/components/ui/modal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrderColumns } from "./order-columns";
 import { useOrders, useDeleteOrder, useUpdateOrderStatus } from "@/hooks/use-orders";
+import { ExportMenu } from "@/components/ui/export-menu";
+import { formatCurrency } from "@/lib/utils";
 import type { OrderWithRelations, OrderStatus } from "@/types/orders";
 
 export function OrderTableShell() {
@@ -61,6 +63,20 @@ export function OrderTableShell() {
     initialState: { pagination: { pageSize: 20 } },
   });
 
+  const getExportRows = () =>
+    table.getFilteredRowModel().rows.map((r) => r.original).map((o) => ({
+      "Order Number": o.order_number,
+      Customer: o.customer?.full_name ?? "Walk-in",
+      Status: o.status,
+      "Payment Status": o.payment_status,
+      "Payment Method": o.payment_method,
+      Subtotal: formatCurrency(o.subtotal),
+      Discount: formatCurrency(o.discount_amount),
+      Tax: formatCurrency(o.tax_amount),
+      "Grand Total": formatCurrency(o.grand_total),
+      Date: new Date(o.created_at).toLocaleDateString(),
+    }));
+
   return (
     <div className="space-y-4">
       {/* Toolbar */}
@@ -75,12 +91,15 @@ export function OrderTableShell() {
               className="pl-9"
             />
           </div>
-          <Button asChild className="w-full sm:w-auto">
-            <Link href="/orders/new">
-              <Plus className="mr-2 h-4 w-4" />
-              New Order
-            </Link>
-          </Button>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <ExportMenu filename="orders" getRows={getExportRows} disabled={orders.length === 0} />
+            <Button asChild className="flex-1 sm:flex-initial">
+              <Link href="/orders/new">
+                <Plus className="mr-2 h-4 w-4" />
+                New Order
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {/* Filters */}

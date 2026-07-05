@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ProductWithRelations } from "@/types/products";
+import { formatCurrency as formatPrice } from "@/lib/utils";
 
 interface RecentProductsProps {
   products: ProductWithRelations[];
@@ -15,14 +16,6 @@ const statusVariant: Record<string, "success" | "ghost" | "warning"> = {
   inactive: "ghost",
   draft: "warning",
 };
-
-function formatPrice(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(n);
-}
 
 export function RecentProducts({ products }: RecentProductsProps) {
   return (

@@ -4,16 +4,12 @@ import { AlertTriangle, PackageX, DollarSign, Boxes } from "lucide-react";
 import { useInventoryStats } from "@/hooks/use-inventory";
 import { useInventoryProducts } from "@/hooks/use-inventory";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency as formatCurrencyFull } from "@/lib/utils";
 
 function formatCurrency(n: number) {
-  if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `$${(n / 1_000).toFixed(1)}K`;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
+  if (n >= 1_000_000) return `Rs ${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `Rs ${(n / 1_000).toFixed(1)}K`;
+  return formatCurrencyFull(n);
 }
 
 interface StatItem {

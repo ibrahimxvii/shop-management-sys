@@ -1,5 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
-import type { Order, OrderWithRelations, OrderFilters, OrderStats, OrderStatus } from "@/types/orders";
+import type {
+  Order,
+  OrderWithRelations,
+  OrderFilters,
+  OrderStats,
+  OrderStatus,
+  OrderReturnWithItems,
+} from "@/types/orders";
 
 const ORDER_WITH_RELATIONS = `
   *,
@@ -63,6 +70,7 @@ export const orderService = {
     payment_status: string;
     notes?: string;
     user_id: string;
+    status?: OrderStatus;
   }): Promise<string> {
     const supabase = await createClient();
 
@@ -76,6 +84,7 @@ export const orderService = {
       p_payment_status: params.payment_status,
       p_notes: params.notes || null,
       p_user_id: params.user_id,
+      ...(params.status ? { p_status: params.status } : {}),
     });
 
     if (error) throw new Error(error.message);
@@ -150,6 +159,39 @@ export const orderService = {
     const { data, error } = await supabase.rpc("get_order_stats");
     if (error) throw new Error(error.message);
     return data as unknown as OrderStats;
+  },
+
+  async processReturn(params: {
+    order_id: string;
+    items: { order_item_id: string; quantity: number }[];
+    reason?: string;
+    refund_method: string;
+    user_id: string;
+  }): Promise<string> {
+    const supabase = await createClient();
+
+    const { data, error } = await supabase.rpc("process_return_transaction", {
+      p_order_id: params.order_id,
+      p_items: params.items,
+      p_reason: params.reason || null,
+      p_refund_method: params.refund_method,
+      p_user_id: params.user_id,
+    });
+
+    if (error) throw new Error(error.message);
+    return data as string;
+  },
+
+  async getReturnsForOrder(orderId: string): Promise<OrderReturnWithItems[]> {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("order_returns")
+      .select(`*, items:order_return_items(*, product:products(id, name, sku))`)
+      .eq("order_id", orderId)
+      .order("created_at", { ascending: false });
+
+    if (error) throw new Error(error.message);
+    return (data ?? []) as unknown as OrderReturnWithItems[];
   },
 
   async getRecentOrders(limit = 5): Promise<OrderWithRelations[]> {

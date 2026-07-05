@@ -13,6 +13,7 @@ import {
   Star,
   Calendar,
   ArrowLeft,
+  Barcode,
 } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ProductStatusBadge } from "@/components/products/product-status-badge";
 import { productService } from "@/services/product.service";
+import { formatCurrency as formatPrice } from "@/lib/utils";
 
 interface ProductDetailPageProps {
   params: Promise<{ id: string }>;
@@ -32,14 +34,6 @@ export async function generateMetadata({
   const { id } = await params;
   const product = await productService.getProductById(id);
   return { title: product?.name ?? "Product" };
-}
-
-function formatPrice(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(n);
 }
 
 function formatDate(d: string) {
@@ -119,6 +113,14 @@ export default async function ProductDetailPage({
               Back
             </Link>
           </Button>
+          {product.barcode && (
+            <Button variant="outline" asChild>
+              <Link href={`/products/${product.id}/label`}>
+                <Barcode className="h-4 w-4" />
+                Print Barcode Label
+              </Link>
+            </Button>
+          )}
           <Button asChild>
             <Link href={`/products/${product.id}/edit`}>
               <Pencil className="h-4 w-4" />

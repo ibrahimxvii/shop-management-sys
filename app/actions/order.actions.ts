@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { orderService } from "@/services/order.service";
-import { orderSchema, updateOrderStatusSchema } from "@/lib/validations/order";
+import { orderSchema, updateOrderStatusSchema, processReturnSchema } from "@/lib/validations/order";
 import { parseError } from "@/lib/errors";
 
 async function getCurrentUserId(): Promise<string> {
@@ -63,6 +63,41 @@ export async function createOrderAction(values: unknown) {
       payment_status: validated.data.payment_status,
       notes: validated.data.notes,
       user_id: userId,
+    });
+
+    revalidatePath("/orders");
+    revalidatePath("/dashboard");
+    revalidatePath("/inventory");
+    return { success: true, data: { id: orderId }, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: parseError(error) };
+  }
+}
+
+export async function createPosSaleAction(values: unknown) {
+  const validated = orderSchema.safeParse(values);
+  if (!validated.success) {
+    return { success: false, data: null, error: validated.error.errors[0].message };
+  }
+
+  try {
+    const userId = await getCurrentUserId();
+    const orderId = await orderService.createOrder({
+      customer_id: validated.data.customer_id || undefined,
+      items: validated.data.items.map((item) => ({
+        product_id: item.product_id,
+        quantity: item.quantity,
+        unit_price: item.unit_price,
+        discount_percent: item.discount_percent,
+      })),
+      discount_amount: validated.data.discount_amount,
+      tax_amount: validated.data.tax_amount,
+      shipping_amount: validated.data.shipping_amount,
+      payment_method: validated.data.payment_method,
+      payment_status: "paid",
+      notes: validated.data.notes,
+      user_id: userId,
+      status: "delivered",
     });
 
     revalidatePath("/orders");
@@ -138,6 +173,41 @@ export async function deleteOrderAction(id: string) {
     return { success: true, error: null };
   } catch (error) {
     return { success: false, error: parseError(error) };
+  }
+}
+
+export async function processReturnAction(values: unknown) {
+  const validated = processReturnSchema.safeParse(values);
+  if (!validated.success) {
+    return { success: false, data: null, error: validated.error.errors[0].message };
+  }
+
+  try {
+    const userId = await getCurrentUserId();
+    const returnId = await orderService.processReturn({
+      order_id: validated.data.order_id,
+      items: validated.data.items,
+      reason: validated.data.reason,
+      refund_method: validated.data.refund_method,
+      user_id: userId,
+    });
+
+    revalidatePath("/orders");
+    revalidatePath(`/orders/${validated.data.order_id}`);
+    revalidatePath("/inventory");
+    revalidatePath("/dashboard");
+    return { success: true, data: { id: returnId }, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: parseError(error) };
+  }
+}
+
+export async function getOrderReturnsAction(orderId: string) {
+  try {
+    const returns = await orderService.getReturnsForOrder(orderId);
+    return { success: true, data: returns, error: null };
+  } catch (error) {
+    return { success: false, data: null, error: parseError(error) };
   }
 }
 

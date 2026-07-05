@@ -10,6 +10,8 @@ export type Resource =
   | "orders"
   | "customers"
   | "employees"
+  | "suppliers"
+  | "purchase_orders"
   | "reports"
   | "analytics"
   | "notifications"
@@ -24,6 +26,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Resource[]> = {
     "orders",
     "customers",
     "employees",
+    "suppliers", "purchase_orders",
     "reports",
     "analytics",
     "notifications",
@@ -36,6 +39,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Resource[]> = {
     "inventory",
     "orders",
     "customers",
+    "suppliers", "purchase_orders",
     "reports",
     "notifications",
   ],
@@ -62,6 +66,8 @@ export const NAV_PERMISSION_MAP: Record<string, Resource> = {
   "/orders":     "orders",
   "/customers":  "customers",
   "/employees":  "employees",
+  "/suppliers":       "suppliers",
+  "/purchase-orders": "purchase_orders",
   "/reports":        "reports",
   "/analytics":      "analytics",
   "/notifications":  "notifications",

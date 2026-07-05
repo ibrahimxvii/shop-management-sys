@@ -11,6 +11,7 @@ export interface CheckboxProps
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ className, label, description, indeterminate, id, ...props }, ref) => {
     const inputRef = React.useRef<HTMLInputElement>(null);
+    const generatedId = React.useId();
 
     React.useImperativeHandle(ref, () => inputRef.current!);
 
@@ -20,7 +21,7 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
       }
     }, [indeterminate]);
 
-    const inputId = id ?? React.useId();
+    const inputId = id ?? generatedId;
 
     const checkbox = (
       <span className="relative flex items-center justify-center">

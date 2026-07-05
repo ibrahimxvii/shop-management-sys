@@ -34,6 +34,7 @@ import { CustomerFormDialog } from "./customer-form-dialog";
 import { useCustomers, useDeleteCustomer } from "@/hooks/use-customers";
 import type { CustomerWithStats } from "@/services/customer.service";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { ExportMenu } from "@/components/ui/export-menu";
 
 export function CustomerTableShell() {
   const [search, setSearch] = React.useState("");
@@ -157,6 +158,17 @@ export function CustomerTableShell() {
     initialState: { pagination: { pageSize: 20 } },
   });
 
+  const getExportRows = () =>
+    customers.map((c) => ({
+      Name: c.full_name,
+      Email: c.email ?? "",
+      Phone: c.phone ?? "",
+      Status: c.status,
+      Orders: c.total_orders,
+      "Total Spent": formatCurrency(c.total_spending),
+      Joined: formatDate(c.created_at),
+    }));
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -181,16 +193,19 @@ export function CustomerTableShell() {
             </SelectContent>
           </Select>
         </div>
-        <Button
-          onClick={() => {
-            setEditingCustomer(null);
-            setFormOpen(true);
-          }}
-          className="w-full sm:w-auto"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          New Customer
-        </Button>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <ExportMenu filename="customers" getRows={getExportRows} disabled={customers.length === 0} />
+          <Button
+            onClick={() => {
+              setEditingCustomer(null);
+              setFormOpen(true);
+            }}
+            className="flex-1 sm:flex-initial"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Customer
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-xl border bg-card shadow-card overflow-hidden">

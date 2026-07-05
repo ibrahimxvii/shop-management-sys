@@ -11,7 +11,6 @@ import {
   Upload,
 } from "lucide-react";
 import { uploadImageAction } from "@/app/actions/storage.actions";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export interface ManagedImage {

@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { useInventoryHistory } from "@/hooks/use-inventory";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,

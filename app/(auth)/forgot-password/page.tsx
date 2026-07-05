@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { Mail, ArrowLeft, Send, CheckCircle2 } from "lucide-react";
 
 import { authService } from "@/services/auth.service";
@@ -53,7 +52,7 @@ export default function ForgotPasswordPage() {
           <p className="text-sm text-muted-foreground">
             If an account exists for{" "}
             <strong className="text-foreground font-medium">{sentTo}</strong>,
-            you'll receive a reset link within a minute.
+            you&apos;ll receive a reset link within a minute.
           </p>
         </div>
 
@@ -63,7 +62,7 @@ export default function ForgotPasswordPage() {
           </p>
           <ol className="space-y-1.5 text-xs text-muted-foreground list-decimal list-inside">
             <li>Open the email from ShopFlow</li>
-            <li>Click the "Reset password" link</li>
+            <li>Click the &quot;Reset password&quot; link</li>
             <li>Choose a new password on the next screen</li>
           </ol>
           <p className="text-xs text-muted-foreground pt-1">

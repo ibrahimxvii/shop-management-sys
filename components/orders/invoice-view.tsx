@@ -2,19 +2,14 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Printer, ArrowLeft } from "lucide-react";
+import Image from "next/image";
+import { Printer, ArrowLeft, Download, ShoppingCart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { OrderStatusBadge, PaymentStatusBadge } from "./order-status-badge";
+import { formatCurrency } from "@/lib/utils";
 import type { OrderWithRelations } from "@/types/orders";
-
-function formatCurrency(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(n);
-}
+import type { ShopSettings } from "@/types/settings";
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -26,23 +21,65 @@ function formatDate(dateStr: string) {
 
 interface InvoiceViewProps {
   order: OrderWithRelations;
+  settings: ShopSettings | null;
 }
 
-export function InvoiceView({ order }: InvoiceViewProps) {
+export function InvoiceView({ order, settings }: InvoiceViewProps) {
+  const [isGeneratingPdf, setIsGeneratingPdf] = React.useState(false);
+  const shopName = settings?.shop_name ?? "ShopFlow";
+  const shopAddressParts = [settings?.shop_address, settings?.shop_city, settings?.shop_country].filter(
+    Boolean
+  );
+
+  const handleDownloadPdf = async () => {
+    setIsGeneratingPdf(true);
+    try {
+      const [{ pdf }, { InvoicePdf }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("./invoice-pdf"),
+      ]);
+      const blob = await pdf(<InvoicePdf order={order} settings={settings} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Invoice-${order.order_number}.pdf`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
+  };
+
   return (
     <>
       {/* Print controls — hidden in print */}
-      <div className="mb-6 flex items-center justify-between print:hidden">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-2 print:hidden">
         <Button variant="outline" size="sm" asChild>
           <Link href={`/orders/${order.id}`}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Order
           </Link>
         </Button>
-        <Button size="sm" onClick={() => window.print()}>
-          <Printer className="mr-2 h-4 w-4" />
-          Print / Save PDF
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/pos">
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              New Sale
+            </Link>
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleDownloadPdf} disabled={isGeneratingPdf}>
+            {isGeneratingPdf ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            Download PDF
+          </Button>
+          <Button size="sm" onClick={() => window.print()}>
+            <Printer className="mr-2 h-4 w-4" />
+            Print / Save PDF
+          </Button>
+        </div>
       </div>
 
       {/* Invoice — this is what prints */}
@@ -50,8 +87,22 @@ export function InvoiceView({ order }: InvoiceViewProps) {
         {/* Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">ShopFlow</h1>
-            <p className="text-sm text-gray-500 mt-1">Shop Management System</p>
+            {settings?.shop_logo_url && (
+              <div className="relative h-12 w-12 mb-2">
+                <Image
+                  src={settings.shop_logo_url}
+                  alt={shopName}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+            )}
+            <h1 className="text-2xl font-bold text-gray-900">{shopName}</h1>
+            {shopAddressParts.length > 0 && (
+              <p className="text-sm text-gray-500 mt-1">{shopAddressParts.join(", ")}</p>
+            )}
+            {settings?.shop_phone && <p className="text-sm text-gray-500">{settings.shop_phone}</p>}
+            {settings?.shop_email && <p className="text-sm text-gray-500">{settings.shop_email}</p>}
           </div>
           <div className="text-right">
             <h2 className="text-2xl font-bold text-gray-900">INVOICE</h2>

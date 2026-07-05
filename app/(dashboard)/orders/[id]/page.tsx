@@ -1,25 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Pencil, FileText, ArrowLeft } from "lucide-react";
+import { Pencil, FileText, ArrowLeft, Undo2 } from "lucide-react";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { OrderStatusBadge, PaymentStatusBadge } from "@/components/orders/order-status-badge";
 import { OrderStatusUpdater } from "@/components/orders/order-status-updater";
+import { ReturnDialog } from "@/components/orders/return-dialog";
+import { ReturnsHistory } from "@/components/orders/returns-history";
 import { orderService } from "@/services/order.service";
+import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Order Details",
 };
-
-function formatCurrency(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(n);
-}
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -63,6 +58,17 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
 
         <div className="flex items-center gap-2 flex-wrap">
           <OrderStatusUpdater orderId={order.id} currentStatus={order.status} />
+          {order.status !== "cancelled" && order.status !== "refunded" && (
+            <ReturnDialog
+              order={order}
+              trigger={
+                <Button variant="outline" size="sm">
+                  <Undo2 className="mr-2 h-4 w-4" />
+                  Return
+                </Button>
+              }
+            />
+          )}
           <Button variant="outline" size="sm" asChild>
             <Link href={`/orders/${order.id}/invoice`}>
               <FileText className="mr-2 h-4 w-4" />
@@ -153,6 +159,9 @@ export default async function OrderDetailPage({ params }: OrderDetailPageProps) 
               </div>
             </div>
           </div>
+
+          {/* Returns */}
+          <ReturnsHistory orderId={order.id} />
 
           {/* Notes */}
           {order.notes && (

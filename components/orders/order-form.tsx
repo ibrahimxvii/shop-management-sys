@@ -22,18 +22,11 @@ import { orderSchema, type OrderFormValues, type OrderFormInput } from "@/lib/va
 import { useCreateOrder, useUpdateOrder } from "@/hooks/use-orders";
 import { useCustomers } from "@/hooks/use-customers";
 import { useInventoryProducts } from "@/hooks/use-inventory";
+import { formatCurrency } from "@/lib/utils";
 import type { OrderWithRelations } from "@/types/orders";
 
 interface OrderFormProps {
   order?: OrderWithRelations | null;
-}
-
-function formatCurrency(n: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format(n);
 }
 
 export function OrderForm({ order }: OrderFormProps) {

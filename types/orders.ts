@@ -96,3 +96,35 @@ export interface OrderStats {
   completed_orders: number;
   total_revenue: number;
 }
+
+export interface OrderReturnItem {
+  id: string;
+  return_id: string;
+  order_item_id: string;
+  product_id: string;
+  quantity: number;
+  unit_refund: number;
+  created_at: string;
+}
+
+export interface OrderReturnItemWithProduct extends OrderReturnItem {
+  product: {
+    id: string;
+    name: string;
+    sku: string | null;
+  } | null;
+}
+
+export interface OrderReturn {
+  id: string;
+  order_id: string;
+  user_id: string | null;
+  reason: string | null;
+  refund_amount: number;
+  refund_method: PaymentMethod;
+  created_at: string;
+}
+
+export interface OrderReturnWithItems extends OrderReturn {
+  items: OrderReturnItemWithProduct[];
+}

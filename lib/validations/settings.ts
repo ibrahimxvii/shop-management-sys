@@ -17,12 +17,12 @@ export const shopSettingsSchema = z.object({
     .default("US"),
   shop_logo_url: z.string().optional().or(z.literal("")),
   shop_logo_path: z.string().optional().or(z.literal("")),
-  currency: z.string().min(1, "Currency is required").max(10).default("USD"),
+  currency: z.string().min(1, "Currency is required").max(10).default("PKR"),
   currency_symbol: z
     .string()
     .min(1, "Currency symbol is required")
     .max(5)
-    .default("$"),
+    .default("Rs"),
   timezone: z.string().min(1, "Timezone is required").default("UTC"),
   date_format: z.string().min(1, "Date format is required").default("MM/DD/YYYY"),
   language: z.string().min(2).max(10).default("en"),

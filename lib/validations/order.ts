@@ -49,3 +49,17 @@ export const updateOrderStatusSchema = z.object({
   id: z.string().uuid(),
   status: z.enum(["pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "refunded"]),
 });
+
+export const returnItemSchema = z.object({
+  order_item_id: z.string().uuid(),
+  quantity: z.number().int().min(1),
+});
+
+export const processReturnSchema = z.object({
+  order_id: z.string().uuid(),
+  items: z.array(returnItemSchema).min(1, "Select at least one item to return"),
+  reason: z.string().max(500).optional(),
+  refund_method: z.enum(["cash", "card", "bank_transfer", "online"]),
+});
+
+export type ProcessReturnValues = z.infer<typeof processReturnSchema>;

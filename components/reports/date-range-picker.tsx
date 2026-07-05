@@ -20,6 +20,11 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   return (
     <div className="flex flex-wrap items-end gap-3">
+      {label && (
+        <span className="w-full text-xs font-medium text-muted-foreground -mb-1">
+          {label}
+        </span>
+      )}
       <div className="flex flex-col gap-1.5">
         <Label className="text-xs text-muted-foreground">From</Label>
         <Input

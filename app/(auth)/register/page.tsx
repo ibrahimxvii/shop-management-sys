@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -23,7 +22,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [showPassword, setShowPassword] = React.useState(false);
   const [emailSent, setEmailSent] = React.useState<string | null>(null);
 
@@ -67,7 +65,7 @@ export default function RegisterPage() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-muted/30 px-4 py-3 text-xs text-muted-foreground text-left space-y-1">
-          <p className="font-medium text-foreground">Didn't get the email?</p>
+          <p className="font-medium text-foreground">Didn&apos;t get the email?</p>
           <p>Check your spam folder, or wait a minute and try again.</p>
         </div>
         <Button variant="outline" asChild className="w-full">
