@@ -14,7 +14,7 @@ export const shopSettingsSchema = z.object({
     .string()
     .min(2, "Use 2-letter country code")
     .max(2, "Use 2-letter country code")
-    .default("US"),
+    .default("PK"),
   shop_logo_url: z.string().optional().or(z.literal("")),
   shop_logo_path: z.string().optional().or(z.literal("")),
   currency: z.string().min(1, "Currency is required").max(10).default("PKR"),

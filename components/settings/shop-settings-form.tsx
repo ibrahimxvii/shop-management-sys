@@ -85,7 +85,7 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
       shop_phone: initialData?.shop_phone ?? "",
       shop_address: initialData?.shop_address ?? "",
       shop_city: initialData?.shop_city ?? "",
-      shop_country: initialData?.shop_country ?? "US",
+      shop_country: initialData?.shop_country ?? "PK",
       shop_logo_url: initialData?.shop_logo_url ?? "",
       shop_logo_path: initialData?.shop_logo_path ?? "",
       currency: initialData?.currency ?? "PKR",
@@ -195,7 +195,7 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
                 <Input
                   id="shop_phone"
                   {...register("shop_phone")}
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="+92 300 1234567"
                 />
               </div>
 
@@ -203,13 +203,13 @@ export function ShopSettingsForm({ initialData }: ShopSettingsFormProps) {
                 <Label htmlFor="shop_country">
                   Country Code{" "}
                   <span className="text-muted-foreground font-normal text-xs">
-                    (2-letter, e.g. US)
+                    (2-letter, e.g. PK)
                   </span>
                 </Label>
                 <Input
                   id="shop_country"
                   {...register("shop_country")}
-                  placeholder="US"
+                  placeholder="PK"
                   maxLength={2}
                   className="uppercase"
                 />

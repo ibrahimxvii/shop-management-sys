@@ -45,7 +45,7 @@ export function CustomerFormDialog({ open, onOpenChange, customer }: CustomerFor
       address: "",
       city: "",
       state: "",
-      country: "US",
+      country: "PK",
       postal_code: "",
       notes: "",
       status: "active",
@@ -61,7 +61,7 @@ export function CustomerFormDialog({ open, onOpenChange, customer }: CustomerFor
         address: customer?.address ?? "",
         city: customer?.city ?? "",
         state: customer?.state ?? "",
-        country: customer?.country ?? "US",
+        country: customer?.country ?? "PK",
         postal_code: customer?.postal_code ?? "",
         notes: customer?.notes ?? "",
         status: customer?.status ?? "active",
@@ -146,12 +146,12 @@ export function CustomerFormDialog({ open, onOpenChange, customer }: CustomerFor
 
           <div className="space-y-1.5">
             <Label htmlFor="postal_code">Postal Code</Label>
-            <Input id="postal_code" {...register("postal_code")} placeholder="10001" />
+            <Input id="postal_code" {...register("postal_code")} placeholder="74200" />
           </div>
 
           <div className="space-y-1.5">
             <Label htmlFor="country">Country</Label>
-            <Input id="country" {...register("country")} placeholder="US" />
+            <Input id="country" {...register("country")} placeholder="PK" />
           </div>
 
           <div className="space-y-1.5 sm:col-span-2">

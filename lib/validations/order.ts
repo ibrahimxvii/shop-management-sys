@@ -7,7 +7,7 @@ export const customerSchema = z.object({
   address: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
-  country: z.string().default("US"),
+  country: z.string().default("PK"),
   postal_code: z.string().optional(),
   notes: z.string().optional(),
   status: z.enum(["active", "inactive"]).default("active"),
