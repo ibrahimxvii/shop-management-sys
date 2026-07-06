@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -10,7 +11,12 @@ import {
   deleteNotificationAction,
   deleteAllReadNotificationsAction,
 } from "@/app/actions/notification.actions";
+import { createClient } from "@/lib/supabase/client";
+import { useAuthStore } from "@/store/auth.store";
 import type { NotificationFilters } from "@/types/notifications";
+import type { Database } from "@/types/database";
+
+type NotificationRow = Database["public"]["Tables"]["notifications"]["Row"];
 
 const KEYS = {
   all: ["notifications"] as const,
@@ -83,6 +89,44 @@ export function useDeleteNotification() {
     },
     onError: (error: Error) => toast.error(error.message),
   });
+}
+
+/**
+ * Realtime push on top of the existing 60s poll in useNotifications/
+ * useUnreadCount (kept as a fallback in case a socket drops). RLS already
+ * scopes notifications to `auth.uid() = user_id`, so no new access-control
+ * surface is introduced by subscribing.
+ */
+export function useRealtimeNotifications() {
+  const queryClient = useQueryClient();
+  const profile = useAuthStore((s) => s.profile);
+
+  useEffect(() => {
+    if (!profile) return;
+
+    const supabase = createClient();
+    const channel = supabase
+      .channel(`realtime-notifications-${profile.id}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${profile.id}`,
+        },
+        (payload) => {
+          const notification = payload.new as NotificationRow;
+          queryClient.invalidateQueries({ queryKey: KEYS.all });
+          toast(notification.title, { description: notification.message });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [profile, queryClient]);
 }
 
 export function useDeleteAllReadNotifications() {

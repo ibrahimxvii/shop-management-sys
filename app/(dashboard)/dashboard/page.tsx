@@ -23,6 +23,7 @@ import { RecentProducts } from "@/components/dashboard/recent-products";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { OverviewChart } from "@/components/dashboard/overview-chart";
 import { LowStockList } from "@/components/dashboard/low-stock-list";
+import { LiveActivityFeed } from "@/components/dashboard/live-activity-feed";
 import { LineChart } from "@/components/analytics/line-chart";
 import { BestSellersTable } from "@/components/analytics/best-sellers-table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -269,6 +270,9 @@ export default async function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Live activity feed (admin/manager only) */}
+      <LiveActivityFeed />
 
       {/* Recent Orders */}
       <div className="rounded-xl border bg-card shadow-card overflow-hidden">

@@ -828,6 +828,17 @@ export interface Database {
       process_return_transaction: { Args: Record<string, unknown>; Returns: Json };
       receive_purchase_order_transaction: { Args: Record<string, unknown>; Returns: Json };
       create_purchase_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+      get_product_sales_velocity: { Args: { p_days_back: number }; Returns: Json };
+      get_stock_aging: { Args: { p_limit: number }; Returns: Json };
+      get_product_growth: { Args: Record<string, unknown>; Returns: Json };
+      get_category_growth: { Args: Record<string, unknown>; Returns: Json };
+      get_top_brands: { Args: { p_limit: number }; Returns: Json };
+      get_profit_estimation: { Args: { p_from: string; p_to: string }; Returns: Json };
+      get_profit_estimation_by_category: { Args: { p_from: string; p_to: string }; Returns: Json };
+      get_frequently_bought_together: { Args: { p_product_id: string; p_limit: number }; Returns: Json };
+      get_sales_heatmap: { Args: { p_days_back: number }; Returns: Json };
+      create_storefront_order_transaction: { Args: Record<string, unknown>; Returns: Json };
+      get_storefront_order_status: { Args: { p_order_number: string; p_phone: string }; Returns: Json };
     };
     Enums: {
       user_role: "admin" | "manager" | "staff";

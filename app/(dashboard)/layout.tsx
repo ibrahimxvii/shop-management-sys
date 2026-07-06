@@ -6,6 +6,7 @@ import { DashboardContent } from "@/components/layout/dashboard-content";
 import { CommandPalette } from "@/components/command-palette/command-palette";
 import { KeyboardShortcutsModal } from "@/components/onboarding/keyboard-shortcuts-modal";
 import { WelcomeHint } from "@/components/onboarding/welcome-hint";
+import { RealtimeListener } from "@/components/dashboard/realtime-listener";
 
 export default async function DashboardLayout({
   children,
@@ -35,6 +36,7 @@ export default async function DashboardLayout({
       <CommandPalette />
       <KeyboardShortcutsModal />
       <WelcomeHint />
+      <RealtimeListener />
     </div>
   );
 }

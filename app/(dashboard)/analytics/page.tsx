@@ -2,13 +2,17 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { analyticsService } from "@/services/analytics.service";
+import { insightsService } from "@/services/insights.service";
 import { AnalyticsStatCards } from "@/components/analytics/analytics-stat-cards";
 import { BestSellersTable } from "@/components/analytics/best-sellers-table";
 import { TopCustomersTable } from "@/components/analytics/top-customers-table";
 import { LineChart } from "@/components/analytics/line-chart";
 import { BarChart } from "@/components/analytics/bar-chart";
 import { DonutChart } from "@/components/analytics/donut-chart";
+import { InsightsTab } from "@/components/analytics/insights-tab";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ExportMenu } from "@/components/ui/export-menu";
 import { formatCurrency } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Analytics" };
@@ -155,8 +159,22 @@ async function AnalyticsContent() {
       {/* Best Sellers + Top Customers */}
       <div className="grid gap-4 lg:grid-cols-2">
         <Card variant="elevated" padding="default">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Best Selling Products</CardTitle>
+            <ExportMenu
+              filename="best-selling-products"
+              disabled={bestSellingProducts.length === 0}
+              getRows={() =>
+                bestSellingProducts.map((p) => ({
+                  Product: p.product_name,
+                  SKU: p.sku ?? "",
+                  Category: p.category_name ?? "",
+                  "Units Sold": p.total_quantity,
+                  Revenue: p.total_revenue,
+                  Orders: p.order_count,
+                }))
+              }
+            />
           </CardHeader>
           <CardContent>
             <BestSellersTable products={bestSellingProducts} />
@@ -164,8 +182,21 @@ async function AnalyticsContent() {
         </Card>
 
         <Card variant="elevated" padding="default">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Top Customers</CardTitle>
+            <ExportMenu
+              filename="top-customers"
+              disabled={topCustomers.length === 0}
+              getRows={() =>
+                topCustomers.map((c) => ({
+                  Customer: c.customer_name,
+                  Email: c.email ?? "",
+                  Orders: c.total_orders,
+                  "Total Spending": c.total_spending,
+                  "Last Order": c.last_order_date ?? "",
+                }))
+              }
+            />
           </CardHeader>
           <CardContent>
             <TopCustomersTable customers={topCustomers} />
@@ -175,6 +206,17 @@ async function AnalyticsContent() {
     </div>
   );
 }
+
+async function InsightsContent() {
+  const insights = await insightsService.getInsights();
+  return <InsightsTab insights={insights} />;
+}
+
+const LOADING_FALLBACK = (
+  <div className="flex items-center justify-center py-20 text-muted-foreground text-sm">
+    Loading...
+  </div>
+);
 
 export default function AnalyticsPage() {
   return (
@@ -187,15 +229,24 @@ export default function AnalyticsPage() {
         </p>
       </div>
 
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center py-20 text-muted-foreground text-sm">
-            Loading analytics...
-          </div>
-        }
-      >
-        <AnalyticsContent />
-      </Suspense>
+      <Tabs defaultValue="overview">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="insights">Insights</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview">
+          <Suspense fallback={LOADING_FALLBACK}>
+            <AnalyticsContent />
+          </Suspense>
+        </TabsContent>
+
+        <TabsContent value="insights">
+          <Suspense fallback={LOADING_FALLBACK}>
+            <InsightsContent />
+          </Suspense>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

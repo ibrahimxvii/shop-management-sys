@@ -11,6 +11,7 @@ import { useUiStore } from "@/store/ui.store";
 import { useAuthStore } from "@/store/auth.store";
 import { useCommandPaletteStore } from "@/store/command-palette.store";
 import { useShortcutsModalStore } from "@/store/shortcuts-modal.store";
+import { useStaffPresence } from "@/hooks/use-staff-presence";
 import { signOutAction } from "@/app/actions/auth.actions";
 import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ export function Navbar() {
   const { profile, clearAuth } = useAuthStore();
   const openCommandPalette = useCommandPaletteStore((s) => s.open);
   const openShortcutsModal = useShortcutsModalStore((s) => s.open);
+  const { onlineCount } = useStaffPresence();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
   const [mounted, setMounted] = React.useState(false);
@@ -88,6 +90,15 @@ export function Navbar() {
 
         {/* Right actions */}
         <div className="ml-auto flex items-center gap-1.5">
+          {/* Staff presence */}
+          <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-input bg-muted/50 px-2.5 py-1 text-xs text-muted-foreground">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+            </span>
+            {onlineCount} online
+          </div>
+
           {/* Mobile search */}
           <Button
             variant="ghost"
